@@ -3,7 +3,7 @@ package br.com.fiap.ecobairro.ui.theme
 import androidx.compose.ui.graphics.Color
 
 
-// CORES DO TEMA CLARO
+
 val LightPrimary = Color(color = 0xFF2DCC70)
 val LightSecondary = Color(color = 0xFF808080)
 val LightBackground = Color(color = 0xFFFFFFFF)
@@ -15,7 +15,7 @@ val LightOnSurface = Color(color = 0xFF000000)
 val LightTertiary = Color(color = 0xFF000000)
 val LightOnTertiary = Color(color = 0xFF000000)
 
-// CORES DO TEMA ESCURO
+
 val DarkPrimary = Color(color = 0xFF2DCC70)
 val DarkSecondary = Color(color = 0xFFBDBDBD)
 val DarkBackground = Color(color = 0xFF232323)
