@@ -4,9 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import br.com.fiap.ecobairro.screens.newsScreen
+import br.com.fiap.ecobairro.navigation.NavigationRoute
 import br.com.fiap.ecobairro.ui.theme.EcoBairroTheme
 
 class MainActivity : ComponentActivity() {
@@ -15,8 +13,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             EcoBairroTheme {
-                //LoginScreen
-                newsScreen()
+                NavigationRoute()
             }
 
             }
@@ -24,10 +21,3 @@ class MainActivity : ComponentActivity() {
     }
 
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    EcoBairroTheme {
-        newsScreen()
-    }
-}

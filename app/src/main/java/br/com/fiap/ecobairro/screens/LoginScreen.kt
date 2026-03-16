@@ -28,11 +28,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import br.com.fiap.ecobairro.R
 import br.com.fiap.ecobairro.ui.theme.EcoBairroTheme
+import br.com.fiap.ecobairro.navigation.NavigationRoute
+import br.com.fiap.ecobairro.navigation.Destination
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -71,7 +75,7 @@ fun LoginScreen() {
 
         Spacer(modifier = Modifier.weight(1f))
 
-        ButtonsComponent()
+        ButtonsComponent(navController)
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -102,7 +106,7 @@ fun Wave(modifier: Modifier = Modifier) {
 @Composable
 private fun loginScreenPreview() {
     EcoBairroTheme {
-        LoginScreen()
+        LoginScreen(rememberNavController())
     }
 
 }
@@ -143,7 +147,7 @@ fun LoginLogoImage(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ButtonsComponent() {
+fun ButtonsComponent(navController: NavController) {
     val ecoGreen = Color(0xFF00C86F) // lembrar de padronizar as cores usando o matherial theme , não consigo ajusta-lo
 
     Column(
@@ -153,7 +157,9 @@ fun ButtonsComponent() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button (
-            onClick = { },
+            onClick = {
+                navController.navigate(Destination.SignupScreen.route)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),

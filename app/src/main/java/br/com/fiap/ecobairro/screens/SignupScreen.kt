@@ -30,6 +30,8 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,23 +39,26 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import br.com.fiap.ecobairro.R
+import br.com.fiap.ecobairro.navigation.Destination
 import br.com.fiap.ecobairro.ui.theme.EcoBairroTheme
 
 
 @Composable
-fun signupScreen() {
+fun SignupScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(30.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start
         ) {
-            BackButtonComponent(onClick = { })
+            BackButtonComponent(navController = navController, onClick = {})
         }
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -82,7 +87,7 @@ fun signupScreen() {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        SignupUserForm()
+        SignupUserForm(navController = navController)
     }
 }
 
@@ -91,18 +96,19 @@ fun signupScreen() {
 @Composable
 private fun LoginScreenPreview() {
     EcoBairroTheme {
-        signupScreen()
+        SignupScreen(rememberNavController())
     }
 }
 
 
 @Composable
 fun BackButtonComponent(
+    navController: NavHostController,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     IconButton(
-        onClick = onClick,
+        onClick = {navController.navigate(Destination.LoginScreen.route)},
         modifier = modifier
             .size(48.dp)
             .border(
@@ -228,7 +234,14 @@ fun SocialLoginButtons() {
 
 
 @Composable
-fun SignupUserForm(modifier: Modifier = Modifier) {
+fun SignupUserForm(modifier: Modifier = Modifier, navController: NavHostController) {
+    val email = remember {
+        mutableStateOf("")
+    }
+    val password = remember {
+        mutableStateOf("")
+    }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -236,12 +249,16 @@ fun SignupUserForm(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = email.value,
+            onValueChange = { emailvalue ->
+                email.value = emailvalue
+            },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(text = "E-mail", style = MaterialTheme.typography.labelSmall) },
             shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedTextColor = MaterialTheme.colorScheme.tertiary,
                 focusedBorderColor = MaterialTheme.colorScheme.secondary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
             ),
@@ -250,12 +267,16 @@ fun SignupUserForm(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = password.value,
+            onValueChange = { passwordvalue ->
+                password.value = passwordvalue
+            },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(text = "Senha", style = MaterialTheme.typography.labelSmall) },
             shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedTextColor = MaterialTheme.colorScheme.tertiary,
                 focusedBorderColor = MaterialTheme.colorScheme.secondary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
             ),
@@ -264,7 +285,9 @@ fun SignupUserForm(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
-            onClick = {},
+            onClick = {
+                navController.navigate(Destination.NewsScreen.route)
+            },
             modifier = Modifier.fillMaxWidth().height(48.dp),
             shape = RoundedCornerShape(30.dp)
         ) {
