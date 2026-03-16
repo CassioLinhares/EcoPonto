@@ -15,10 +15,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.RemoveRedEye
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -30,19 +35,27 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.ecobairro.R
 import br.com.fiap.ecobairro.navigation.Destination
+import br.com.fiap.ecobairro.repository.SharedPreferencesUserRepository
+import br.com.fiap.ecobairro.repository.UserRepository
 import br.com.fiap.ecobairro.ui.theme.EcoBairroTheme
 
 
@@ -51,7 +64,7 @@ fun SignupScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(30.dp),
+            .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
@@ -242,6 +255,18 @@ fun SignupUserForm(modifier: Modifier = Modifier, navController: NavHostControll
         mutableStateOf("")
     }
 
+    var showPassword by remember {
+        mutableStateOf(false)
+    }
+
+    var authenticatorError by remember {
+        mutableStateOf(false)
+    }
+
+    val userRepository: UserRepository =
+        SharedPreferencesUserRepository(LocalContext.current)
+
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -280,13 +305,41 @@ fun SignupUserForm(modifier: Modifier = Modifier, navController: NavHostControll
                 focusedBorderColor = MaterialTheme.colorScheme.secondary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
             ),
+            trailingIcon = {
+                val image = if (showPassword){
+                    Icons.Default.Visibility
+                } else {
+                    Icons.Default.VisibilityOff
+                }
+                IconButton(
+                    onClick = {showPassword = !showPassword}
+                ) {
+                    Icon(
+                        imageVector = image,
+                        contentDescription = "Mostrar senha",
+                        tint = MaterialTheme.colorScheme.tertiary
+                    )
+                }
+            },
+            visualTransformation = if (showPassword){
+                VisualTransformation.None
+            } else {
+                PasswordVisualTransformation()
+            }
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
             onClick = {
-                navController.navigate(Destination.NewsScreen.route)
+                val authenticate = userRepository.login(email.value, password.value)
+                if (authenticate){
+                    navController.navigate(Destination.NewsScreen.route)
+                }
+                else {
+                    authenticatorError = true
+                }
+
             },
             modifier = Modifier.fillMaxWidth().height(48.dp),
             shape = RoundedCornerShape(30.dp)
@@ -296,6 +349,21 @@ fun SignupUserForm(modifier: Modifier = Modifier, navController: NavHostControll
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.surface
             )
+        }
+
+        if (authenticatorError){
+            Row {
+                Icon(
+                    imageVector = Icons.Default.Error,
+                    contentDescription = "Icone de erro",
+                    tint = MaterialTheme.colorScheme.error
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Authenticator Error",
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
         }
 
         Text(
@@ -320,7 +388,7 @@ fun SignupUserForm(modifier: Modifier = Modifier, navController: NavHostControll
                 style = MaterialTheme.typography.labelMedium
             )
             TextButton(
-                onClick = { },
+                onClick = { navController.navigate(Destination.Cadastro.route) },
                 contentPadding = PaddingValues(start = 4.dp)
             ) {
                 Text(

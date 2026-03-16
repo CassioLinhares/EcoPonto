@@ -8,12 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Recycling
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -30,6 +25,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.ecobairro.R
 import br.com.fiap.ecobairro.ui.theme.EcoBairroTheme
+import br.com.fiap.ecobairro.components.MyBottomAppBar // <-- Importação do componente unificado
 
 data class EcoItem(
     val category: String,
@@ -52,27 +48,27 @@ fun NewsScreen(navController: NavHostController) {
             date = "02/11/2025",
             imageRes = R.drawable.image1
         ),EcoItem(
-                category = "Brasil",
-        title = "Sem educação ambiental, reciclagem se torna desafio em Porto Alegre",
-        sourceName = "sul21",
-        sourceLogoRes = R.drawable.sul21,
-        date = "25/12/2025",
-        imageRes = R.drawable.image2
-    ),  EcoItem(
+            category = "Brasil",
+            title = "Sem educação ambiental, reciclagem se torna desafio em Porto Alegre",
+            sourceName = "sul21",
+            sourceLogoRes = R.drawable.sul21,
+            date = "25/12/2025",
+            imageRes = R.drawable.image2
+        ),  EcoItem(
             category = "Brasil",
             title = "Leilões: quando a retirada de veículos dos pátios vira ganho ambiental e social",
             sourceName = "Portal cidade Ivinhema",
             sourceLogoRes = R.drawable.pci,
             date = "02/02/2026",
             imageRes = R.drawable.image3
-    ),EcoItem(
+        ),EcoItem(
             category = "Brasil",
             title = "Empresas se adaptam às novas exigências de sustentabilidade",
             sourceName = "Terra",
             sourceLogoRes = R.drawable.terra,
             date = "02/11/2025",
             imageRes = R.drawable.image4
-    ),
+        ),
         EcoItem(
             category = "Brasil",
             title = "Desenvolvimento sustentável é a verdadeira arma contra o crime na Amazônia",
@@ -85,7 +81,7 @@ fun NewsScreen(navController: NavHostController) {
 
     Scaffold(
         containerColor = Color(0xFFF5F5F5),
-        bottomBar = { MyBottomAppBar() }
+        bottomBar = { MyBottomAppBar() } // <-- Chamando a barra do componente externo
     ) { padding ->
         LazyColumn(
             modifier = Modifier
@@ -107,7 +103,7 @@ fun NewsScreen(navController: NavHostController) {
             }
         }
     }
-};
+}
 
 @Composable
 fun EcoNewsItem(item: EcoItem) {
@@ -141,7 +137,6 @@ fun EcoNewsItem(item: EcoItem) {
             fontSize = 16.sp,
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.tertiary,
-
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -192,57 +187,6 @@ fun EcoNewsItem(item: EcoItem) {
                 tint = Color.Gray,
                 modifier = Modifier.size(20.dp)
             )
-        }
-    }
-}
-
-@Composable
-fun MyBottomAppBar() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp),
-        contentAlignment = Alignment.BottomCenter
-    ) {
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(70.dp),
-            color = Color.White,
-            shadowElevation = 15.dp
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = { }) { Icon(Icons.Default.Home, contentDescription = "Home", tint = Color.Gray) }
-                IconButton(onClick = { }) { Icon(Icons.Default.List, contentDescription = "Atividade", tint = Color.Gray) }
-
-                Spacer(modifier = Modifier.size(60.dp))
-
-                IconButton(onClick = { }) { Icon(Icons.Default.Message, contentDescription = "Mensagens", tint = Color.Gray) }
-                IconButton(onClick = { }) { Icon(Icons.Default.Person, contentDescription = "Perfil", tint = Color.Gray) }
-            }
-        }
-
-        Surface(
-            modifier = Modifier
-                .padding(bottom = 27.dp)
-                .size(65.dp)
-                .clickable {},
-            shape = CircleShape,
-            color = Color(0xFF2ECC71),
-            shadowElevation = 8.dp
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    imageVector = Icons.Default.Recycling,
-                    contentDescription = "Botão Reciclar",
-                    tint = Color.White,
-                    modifier = Modifier.size(35.dp)
-                )
-            }
         }
     }
 }

@@ -4,4 +4,6 @@ sealed class Destination (val route: String){
     object LoginScreen : Destination("Login")
     object SignupScreen : Destination("Signup")
     object NewsScreen : Destination("NewsScreen")
+    object Cadastro: Destination("Cadastro")
+    object DonationScreen: Destination("Cadastro")
 }

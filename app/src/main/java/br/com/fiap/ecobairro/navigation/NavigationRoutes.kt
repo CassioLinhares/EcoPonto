@@ -7,6 +7,8 @@ import androidx.navigation.compose.rememberNavController
 import br.com.fiap.ecobairro.screens.LoginScreen
 import br.com.fiap.ecobairro.screens.NewsScreen
 import br.com.fiap.ecobairro.screens.SignupScreen
+import br.com.fiap.ecobairro.screens.CadastroScreen
+import br.com.fiap.ecobairro.screens.DonationScreen
 
 
 @Composable
@@ -14,7 +16,7 @@ fun NavigationRoute() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Destination.LoginScreen.route
+        startDestination = Destination.DonationScreen.route
     ){
         composable(Destination.LoginScreen.route){
             LoginScreen(navController)
@@ -25,5 +27,14 @@ fun NavigationRoute() {
         composable(Destination.SignupScreen.route){
             SignupScreen(navController)
         }
+        composable(Destination.Cadastro.route)
+        {
+            CadastroScreen(navController)
+        }
+        composable(Destination.DonationScreen.route)
+        {
+           DonationScreen(navController)
+        }
+
     }
 }

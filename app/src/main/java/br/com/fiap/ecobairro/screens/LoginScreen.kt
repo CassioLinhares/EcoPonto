@@ -176,7 +176,10 @@ fun ButtonsComponent(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedButton (
-            onClick = {},
+
+            onClick = {
+                navController.navigate(Destination.Cadastro.route)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),

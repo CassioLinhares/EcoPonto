@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import br.com.fiap.ecobairro.navigation.NavigationRoute
+import br.com.fiap.ecobairro.screens.DonationScreen
 import br.com.fiap.ecobairro.ui.theme.EcoBairroTheme
 
 class MainActivity : ComponentActivity() {
