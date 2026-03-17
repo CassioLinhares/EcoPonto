@@ -1,9 +1,15 @@
 package br.com.fiap.ecobairro.navigation
 
 sealed class Destination (val route: String){
-    object LoginScreen : Destination("Login")
-    object SignupScreen : Destination("Signup")
+    object InialScreen : Destination("InitialScreen")
+    object LoginScreen : Destination("LoginScreen")
     object NewsScreen : Destination("NewsScreen")
-    object Cadastro: Destination("Cadastro")
-    object DonationScreen: Destination("Cadastro")
+    object SignupScreen: Destination("SignupScreen")
+    object DonationScreen: Destination("DonationScreen")
+    object ProfileScreen: Destination("ProfileScreen")
+    object HomeScreen: Destination("HomeScreen")
+    object LocationScreen: Destination("LocationScreen")
+
+
+
 }

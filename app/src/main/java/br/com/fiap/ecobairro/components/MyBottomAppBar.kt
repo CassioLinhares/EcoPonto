@@ -17,15 +17,19 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import br.com.fiap.ecobairro.navigation.Destination
 
 @Composable
-fun MyBottomAppBar(modifier: Modifier = Modifier) {
+fun MyBottomAppBar(navController: NavController) {
     Box(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .height(100.dp),
         contentAlignment = Alignment.BottomCenter
@@ -42,13 +46,41 @@ fun MyBottomAppBar(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { }) { Icon(Icons.Default.Home, contentDescription = "Home", tint = MaterialTheme.colorScheme.secondary) }
-                IconButton(onClick = { }) { Icon(Icons.Default.List, contentDescription = "Atividade", tint = MaterialTheme.colorScheme.secondary) }
+                IconButton(
+                    onClick = { navController.navigate(Destination.HomeScreen.route) }
+                ) {
+                    Icon(Icons.Default.Home,
+                        contentDescription = "Home",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+                IconButton(
+                    onClick = { navController.navigate(Destination.NewsScreen.route) }
+                ) {
+                    Icon(Icons.Default.List,
+                        contentDescription = "Atividade",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
 
                 Spacer(modifier = Modifier.size(60.dp))
 
-                IconButton(onClick = { }) { Icon(Icons.Default.VolunteerActivism, contentDescription = "Doações", tint = MaterialTheme.colorScheme.secondary) }
-                IconButton(onClick = { }) { Icon(Icons.Default.Person, contentDescription = "Perfil", tint = MaterialTheme.colorScheme.secondary) }
+                IconButton(
+                    onClick = { navController.navigate(Destination.DonationScreen.route) }
+                ) {
+                    Icon(Icons.Default.VolunteerActivism,
+                        contentDescription = "Doações",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+                IconButton(
+                    onClick = { navController.navigate(Destination.ProfileScreen.route) }
+                ) {
+                    Icon(Icons.Default.Person,
+                        contentDescription = "Perfil",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
             }
         }
 
@@ -58,15 +90,21 @@ fun MyBottomAppBar(modifier: Modifier = Modifier) {
                 .size(65.dp)
                 .clickable {},
             shape = CircleShape,
-            color = Color(0xFF2ECC71),
+            color = MaterialTheme.colorScheme.primary,
             shadowElevation = 8.dp
         ) {
-            Box(contentAlignment = Alignment.Center) {
+            Box(
+                contentAlignment = Alignment.Center,
+            ) {
                 Icon(
                     imageVector = Icons.Default.Recycling,
                     contentDescription = "Botão Reciclar",
                     tint = Color.White,
-                    modifier = Modifier.size(35.dp)
+                    modifier = Modifier
+                        .size(35.dp)
+                        .clickable(onClick = {
+                            navController.navigate(Destination.LocationScreen.route)
+                        })
                 )
             }
         }
@@ -77,7 +115,7 @@ fun MyBottomAppBar(modifier: Modifier = Modifier) {
 @Composable
 private fun MyBottomAppBarPreview() {
     EcoBairroTheme {
-        MyBottomAppBar()
+        MyBottomAppBar(rememberNavController() )
     }
 
 }

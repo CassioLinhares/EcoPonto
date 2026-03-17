@@ -61,8 +61,9 @@ fun DonationScreen(navController: NavHostController) {
     )
 
     Scaffold(
-        containerColor = Color(0xFFF5F7FA),
-        bottomBar = { MyBottomAppBar() }
+        //containerColor = Color(0xFFF5F7FA),
+        containerColor = MaterialTheme.colorScheme.tertiary,
+        bottomBar = { MyBottomAppBar(navController) }
     ) { padding ->
         LazyColumn(
             modifier = Modifier
@@ -144,7 +145,9 @@ fun DonationCard(item: DonationItem) {
                     Spacer(modifier = Modifier.weight(1f))
                     Button(
                         onClick = { },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF32CD32)),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        ),
                         shape = RoundedCornerShape(8.dp),
                         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp)
                     ) {

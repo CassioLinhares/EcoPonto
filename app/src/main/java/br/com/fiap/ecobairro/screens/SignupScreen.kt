@@ -1,9 +1,8 @@
 package br.com.fiap.ecobairro.screens
 
-import androidx.compose.foundation.BorderStroke
+import android.util.Patterns
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,21 +14,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.RemoveRedEye
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -41,88 +36,76 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.ecobairro.R
+import br.com.fiap.ecobairro.model.User
 import br.com.fiap.ecobairro.navigation.Destination
 import br.com.fiap.ecobairro.repository.SharedPreferencesUserRepository
-import br.com.fiap.ecobairro.repository.UserRepository
 import br.com.fiap.ecobairro.ui.theme.EcoBairroTheme
-
 
 @Composable
 fun SignupScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(vertical = 10.dp, horizontal = 30.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start
         ) {
-            BackButtonComponent(navController = navController, onClick = {})
+            BackButtonComponentSignUpScreen(
+                onClick = {
+                    navController.navigate(Destination.InialScreen.route)
+                },
+                navController = navController)
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        LogoImage()
+        LogoImageCasdatro()
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = stringResource(R.string.bem_vindo),
+            text = "Crie sua conta", // Adaptei o texto para o contexto de cadastro
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
-        SocialLoginButtons()
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text(
-            text = "ou entrar com E-mail",
-            color = MaterialTheme.colorScheme.secondary,
-            style = MaterialTheme.typography.labelMedium
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        SignupUserForm(navController = navController)
+        CadastroUserForm(navController = navController)
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
-private fun LoginScreenPreview() {
+private fun SignupScreenPreview() {
     EcoBairroTheme {
         SignupScreen(rememberNavController())
     }
 }
 
-
 @Composable
-fun BackButtonComponent(
+fun BackButtonComponentSignUpScreen(
     navController: NavHostController,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     IconButton(
-        onClick = {navController.navigate(Destination.LoginScreen.route)},
+        onClick = {onClick()},
         modifier = modifier
+            .padding(bottom = 50.dp)
             .size(48.dp)
             .border(
                 width = 1.5.dp,
@@ -138,13 +121,11 @@ fun BackButtonComponent(
     }
 }
 
-
 @Composable
-fun LogoImage() {
+fun LogoImageCasdatro() {
     Box(
         modifier = Modifier
-    )
-    {
+    ) {
         Image(
             painter = painterResource(R.drawable.logo),
             contentDescription = "imagem do logotipo",
@@ -154,9 +135,8 @@ fun LogoImage() {
     }
 }
 
-
 @Composable
-fun TextComponent() {
+fun TextComponentcadastro() {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -168,103 +148,34 @@ fun TextComponent() {
     }
 }
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SocialLoginButtons() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(
-            onClick = { },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3B5998)),
-            shape = RoundedCornerShape(30.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_facebook),
-                    contentDescription = "Logo Facebook",
-                    modifier = Modifier.size(24.dp)
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Text(
-                    text = "Entrar com FACEBOOK",
-                    color = MaterialTheme.colorScheme.surface,
-                    style = MaterialTheme.typography.titleSmall,
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Spacer(modifier = Modifier.size(24.dp))
-            }
-        }
-
-        Spacer(modifier = Modifier.height(9.dp))
-
-        OutlinedButton(
-            onClick = { },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
-            border = BorderStroke(1.dp, Color.Gray),
-            shape = RoundedCornerShape(30.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_google),
-                    contentDescription = "Logo Google",
-                    modifier = Modifier.size(24.dp)
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Text(
-                    text = "Entrar com GOOGLE",
-                    color = MaterialTheme.colorScheme.secondary,
-                    style = MaterialTheme.typography.titleSmall,
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-                Spacer(modifier = Modifier.size(24.dp))
-            }
-        }
-    }
-}
-
-
-@Composable
-fun SignupUserForm(modifier: Modifier = Modifier, navController: NavHostController) {
-    val email = remember {
+fun CadastroUserForm(modifier: Modifier = Modifier, navController: NavHostController) {
+    var name by remember {
         mutableStateOf("")
     }
-    val password = remember {
+    var email by remember {
+        mutableStateOf("")
+    }
+    var password by remember {
         mutableStateOf("")
     }
 
-    var showPassword by remember {
-        mutableStateOf(false)
-    }
+    val userRepository = SharedPreferencesUserRepository(LocalContext.current)
 
-    var authenticatorError by remember {
-        mutableStateOf(false)
-    }
+    var isNameError by remember { mutableStateOf((false)) }
+    var isEmailError by remember { mutableStateOf((false)) }
+    var isPasswordError by remember { mutableStateOf((false)) }
 
-    val userRepository: UserRepository =
-        SharedPreferencesUserRepository(LocalContext.current)
+    var showDiaologError by remember { mutableStateOf(false) }
+    var showDiaologSuccess by remember { mutableStateOf(false) }
+
+    fun validate(): Boolean{
+        isNameError = name.length < 4
+        isEmailError = email.length < 4 || !Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        isPasswordError = password.length < 4
+        return !isNameError && !isEmailError && !isPasswordError
+    }
 
 
     Column(
@@ -274,9 +185,52 @@ fun SignupUserForm(modifier: Modifier = Modifier, navController: NavHostControll
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
-            value = email.value,
-            onValueChange = { emailvalue ->
-                email.value = emailvalue
+            value = name,
+            onValueChange = {
+                name = it
+            },
+            modifier = Modifier.fillMaxWidth(),
+            label = {
+                Text(text = "Nome",
+                    style = MaterialTheme.typography.labelSmall
+                )
+            },
+            shape = RoundedCornerShape(16.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedTextColor = MaterialTheme.colorScheme.tertiary,
+                focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+            ),
+            isError = isNameError,
+            trailingIcon = {
+                if (isNameError){
+                    Icon(
+                        imageVector = Icons.Default.Error,
+                        contentDescription = "Icone de erro",
+                        tint = MaterialTheme.colorScheme.error
+
+                    )
+                }
+            },
+            supportingText = {
+                if (isNameError){
+                    Text(
+                        text = "O nome deve ter no mínimo 4 caracteres",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End
+                    )
+                }
+            }
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = email,
+            onValueChange = {
+                email = it
             },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(text = "E-mail", style = MaterialTheme.typography.labelSmall) },
@@ -286,15 +240,37 @@ fun SignupUserForm(modifier: Modifier = Modifier, navController: NavHostControll
                 unfocusedTextColor = MaterialTheme.colorScheme.tertiary,
                 focusedBorderColor = MaterialTheme.colorScheme.secondary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+
             ),
+            isError = isEmailError,
+            trailingIcon = {
+                if (isEmailError){
+                    Icon(
+                        imageVector = Icons.Default.Error,
+                        contentDescription = "Icone de erro",
+                        tint = MaterialTheme.colorScheme.error
+
+                    )
+                }
+            },
+            supportingText = {
+                if (isEmailError){
+                    Text(
+                        text = "O Email deve ter no mínimo 4 caracteres",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End
+                    )
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = password.value,
-            onValueChange = { passwordvalue ->
-                password.value = passwordvalue
+            value = password,
+            onValueChange = {
+                password = it
             },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(text = "Senha", style = MaterialTheme.typography.labelSmall) },
@@ -305,75 +281,56 @@ fun SignupUserForm(modifier: Modifier = Modifier, navController: NavHostControll
                 focusedBorderColor = MaterialTheme.colorScheme.secondary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
             ),
+            isError = isPasswordError,
             trailingIcon = {
-                val image = if (showPassword){
-                    Icons.Default.Visibility
-                } else {
-                    Icons.Default.VisibilityOff
-                }
-                IconButton(
-                    onClick = {showPassword = !showPassword}
-                ) {
+                if (isPasswordError){
                     Icon(
-                        imageVector = image,
-                        contentDescription = "Mostrar senha",
-                        tint = MaterialTheme.colorScheme.tertiary
+                        imageVector = Icons.Default.Error,
+                        contentDescription = "Icone de erro",
+                        tint = MaterialTheme.colorScheme.error
+
                     )
                 }
             },
-            visualTransformation = if (showPassword){
-                VisualTransformation.None
-            } else {
-                PasswordVisualTransformation()
+            supportingText = {
+                if (isPasswordError){
+                    Text(
+                        text = "A senha deve ter no mínimo 4 caracteres",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.End
+                    )
+                }
             }
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
+        //btn cadastrar
         Button(
             onClick = {
-                val authenticate = userRepository.login(email.value, password.value)
-                if (authenticate){
-                    navController.navigate(Destination.NewsScreen.route)
-                }
-                else {
-                    authenticatorError = true
-                }
-
+                if (validate()){
+                    userRepository.saveUser(
+                        User(
+                            name = name,
+                            password = password,
+                            email = email
+                        )
+                    )
+                    showDiaologSuccess = true
+                } else {showDiaologError = true}
             },
-            modifier = Modifier.fillMaxWidth().height(48.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
             shape = RoundedCornerShape(30.dp)
         ) {
             Text(
-                text = "Entrar",
+                text = "Cadastrar",
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.surface
             )
         }
-
-        if (authenticatorError){
-            Row {
-                Icon(
-                    imageVector = Icons.Default.Error,
-                    contentDescription = "Icone de erro",
-                    tint = MaterialTheme.colorScheme.error
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Authenticator Error",
-                    color = MaterialTheme.colorScheme.error
-                )
-            }
-        }
-
-        Text(
-            text = "Esqueceu a senha?",
-            color = MaterialTheme.colorScheme.secondary,
-            style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier
-                .padding(top = 16.dp)
-                .clickable { }
-        )
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -383,20 +340,60 @@ fun SignupUserForm(modifier: Modifier = Modifier, navController: NavHostControll
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Ainda não tem conta?",
+                text = "Já tem conta?",
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.labelMedium
             )
             TextButton(
-                onClick = { navController.navigate(Destination.Cadastro.route) },
+                onClick = { navController.navigate(Destination.LoginScreen.route) },
                 contentPadding = PaddingValues(start = 4.dp)
             ) {
                 Text(
-                    text = "Registrar-se",
+                    text = "Entrar",
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.labelMedium,
                 )
             }
+        }
+        if (showDiaologError){
+            AlertDialog(
+                onDismissRequest = { showDiaologError = false },
+                title = {
+                    Text(text = "Erro")
+                },
+                text = {
+                    Text(text = "Preencha todos os campos corretamente")
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = { showDiaologError = false }
+                    ) {
+                        Text(text = "OK")
+                    }
+                }
+
+            )
+        }
+        if (showDiaologSuccess){
+            AlertDialog(
+                onDismissRequest = { showDiaologError = false },
+                title = {
+                    Text(text = "Sucesso")
+                },
+                text = {
+                    Text(text = "Conta criada com sucesso")
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showDiaologSuccess = false
+                            navController.navigate(Destination.LoginScreen.route) }
+                    ) {
+                        Text(text = "OK")
+                    }
+                }
+
+            )
         }
     }
 }

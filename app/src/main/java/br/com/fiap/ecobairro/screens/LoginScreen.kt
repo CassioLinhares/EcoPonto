@@ -2,168 +2,376 @@ package br.com.fiap.ecobairro.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.ecobairro.R
-import br.com.fiap.ecobairro.ui.theme.EcoBairroTheme
-import br.com.fiap.ecobairro.navigation.NavigationRoute
 import br.com.fiap.ecobairro.navigation.Destination
+import br.com.fiap.ecobairro.repository.SharedPreferencesUserRepository
+import br.com.fiap.ecobairro.repository.UserRepository
+import br.com.fiap.ecobairro.ui.theme.EcoBairroTheme
+
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        Box(
-            modifier = Modifier.fillMaxWidth()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start
         ) {
-            Image(
-                painter = painterResource(R.drawable.vector),
-                contentDescription = "Fundo verde",
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier.fillMaxWidth()
+            BackButtonComponent(
+                navController = navController,
+                onClick = {
+                    navController.navigate(Destination.InialScreen.route)
+                }
             )
-            Column(
-                modifier = Modifier.matchParentSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                LoginLogoImage()
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Text(
-                    text = "EcoBairro",
-                    color = MaterialTheme.colorScheme.surface,
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
-        TitleComponent()
+        LogoImage()
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(10.dp))
 
-        ButtonsComponent(navController)
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text(
-            text = "Ao entrar ou se cadastrar, você concorda com nossos Termos de Serviço e Política de Privacidade",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.secondary,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 12.dp)
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-    }
-}
-
-@Composable
-fun Wave(modifier: Modifier = Modifier) {
-    Image(
-        painter = painterResource(R.drawable.vector),
-        contentDescription = "Fundo verde",
-        contentScale = ContentScale.FillWidth,
-        modifier = modifier.fillMaxWidth()
-    )
-}
-
-
-@Preview
-@Composable
-private fun loginScreenPreview() {
-    EcoBairroTheme {
-        LoginScreen(rememberNavController())
-    }
-
-}
-
-@Composable
-fun TitleComponent(){
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
         Text(
             text = stringResource(R.string.bem_vindo),
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary
         )
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        SocialLoginButtons()
+
+        Spacer(modifier = Modifier.height(20.dp))
+
         Text(
-            text = stringResource(R.string.reciclar_cuidar_da_nossa_casa),
-            color = MaterialTheme.colorScheme.primary,
+            text = "ou entrar com E-mail",
+            color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.labelMedium
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        SignupUserForm(
+            navController = navController,
+            onClick = {
+                navController.navigate(Destination.SignupScreen.route)
+            }
+        )
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+private fun LoginScreenPreview() {
+    EcoBairroTheme {
+        SignupScreen(rememberNavController())
+    }
+}
+
+
+@Composable
+fun BackButtonComponent(
+    navController: NavHostController,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    IconButton(
+        onClick = {onClick()},
+        modifier = modifier
+            .size(48.dp)
+            .border(
+                width = 1.5.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = CircleShape
+            )
+    ) {
+        Icon(
+            imageVector = Icons.Default.ArrowBack,
+            contentDescription = "Voltar para a tela anterior",
+            tint = MaterialTheme.colorScheme.primary
         )
     }
 }
 
 
 @Composable
-fun LoginLogoImage(modifier: Modifier = Modifier) {
+fun LogoImage() {
     Box(
         modifier = Modifier
-            )
+    )
     {
         Image(
             painter = painterResource(R.drawable.logo),
             contentDescription = "imagem do logotipo",
             modifier = Modifier
-                .size(200.dp)
+                .size(85.dp)
         )
     }
 }
 
-@Composable
-fun ButtonsComponent(navController: NavController) {
-    val ecoGreen = Color(0xFF00C86F) // lembrar de padronizar as cores usando o matherial theme , não consigo ajusta-lo
 
+@Composable
+fun TextComponent() {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(R.string.bem_vindo),
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+
+@Composable
+fun SocialLoginButtons() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button (
-            onClick = {
-                navController.navigate(Destination.SignupScreen.route)
-            },
+        Button(
+            onClick = { },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = ecoGreen),
+                .height(48.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4C68A6)),
+            shape = RoundedCornerShape(30.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_facebook),
+                    contentDescription = "Logo Facebook",
+                    modifier = Modifier.size(24.dp)
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Text(
+                    text = "Entrar com FACEBOOK",
+                    color = MaterialTheme.colorScheme.surface,
+                    style = MaterialTheme.typography.titleSmall,
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Spacer(modifier = Modifier.size(24.dp))
+            }
+        }
+
+        Spacer(modifier = Modifier.height(9.dp))
+
+        OutlinedButton(
+            onClick = { },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
+            border = BorderStroke(1.dp, Color.Gray),
+            shape = RoundedCornerShape(30.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_google),
+                    contentDescription = "Logo Google",
+                    modifier = Modifier.size(24.dp)
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Text(
+                    text = "Entrar com GOOGLE",
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.titleSmall,
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.size(24.dp))
+            }
+        }
+    }
+}
+
+
+@Composable
+fun SignupUserForm(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    onClick: () -> Unit
+) {
+    val email = remember {
+        mutableStateOf("")
+    }
+    val password = remember {
+        mutableStateOf("")
+    }
+
+    var showPassword by remember {
+        mutableStateOf(false)
+    }
+
+    var authenticatorError by remember {
+        mutableStateOf(false)
+    }
+
+    val userRepository: UserRepository =
+        SharedPreferencesUserRepository(LocalContext.current)
+
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        //email
+        OutlinedTextField(
+            value = email.value,
+            onValueChange = { emailvalue ->
+                email.value = emailvalue
+            },
+            modifier = Modifier.fillMaxWidth(),
+            label = {
+                Text(
+                    text = "E-mail",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+            },
+            shape = RoundedCornerShape(16.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onTertiary,
+                unfocusedTextColor = MaterialTheme.colorScheme.onTertiary,
+                focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                cursorColor = MaterialTheme.colorScheme.secondary,
+            ),
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        //password
+        OutlinedTextField(
+            value = password.value,
+            onValueChange = { passwordvalue ->
+                password.value = passwordvalue
+            },
+            modifier = Modifier.fillMaxWidth(),
+            label = {
+                Text(
+                    text = "Senha",
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.labelSmall
+                )
+            },
+            shape = RoundedCornerShape(16.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onTertiary,
+                unfocusedTextColor = MaterialTheme.colorScheme.onTertiary,
+                focusedBorderColor = MaterialTheme.colorScheme.secondary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                cursorColor = MaterialTheme.colorScheme.secondary,
+            ),
+            trailingIcon = {
+                val image = if (showPassword){
+                    Icons.Default.Visibility
+                } else {
+                    Icons.Default.VisibilityOff
+                }
+                IconButton(
+                    onClick = {showPassword = !showPassword}
+                ) {
+                    Icon(
+                        imageVector = image,
+                        contentDescription = "Mostrar senha",
+                        tint = MaterialTheme.colorScheme.tertiary
+                    )
+                }
+            },
+            visualTransformation = if (showPassword){
+                VisualTransformation.None
+            } else {
+                PasswordVisualTransformation()
+            }
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        //btn entrar
+        Button(
+            onClick = {
+                val authenticate = userRepository.login(email.value, password.value)
+                if (authenticate){
+                    navController.navigate(Destination.HomeScreen.route)
+                }
+                else {
+                    authenticatorError = true
+                }
+
+            },
+            modifier = Modifier.fillMaxWidth().height(48.dp),
             shape = RoundedCornerShape(30.dp)
         ) {
             Text(
@@ -173,25 +381,54 @@ fun ButtonsComponent(navController: NavController) {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedButton (
+        if (authenticatorError){
+            Row {
+                Icon(
+                    imageVector = Icons.Default.Error,
+                    contentDescription = "Icone de erro",
+                    tint = MaterialTheme.colorScheme.error
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Authenticator Error",
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        }
 
-            onClick = {
-                navController.navigate(Destination.Cadastro.route)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = ecoGreen),
-            border = BorderStroke(2.dp, ecoGreen),
-            shape = RoundedCornerShape(30.dp)
+//        Text(
+//            text = "Esqueceu a senha?",
+//            color = MaterialTheme.colorScheme.secondary,
+//            style = MaterialTheme.typography.labelMedium,
+//            modifier = Modifier
+//                .padding(top = 16.dp)
+//                .clickable { }
+//        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "Registrar-se",
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.primary
+                text = "Ainda não tem conta?",
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.labelMedium
             )
+            TextButton(
+                onClick = { onClick() },
+                contentPadding = PaddingValues(start = 4.dp)
+            ) {
+                Text(
+                    text = "Registrar-se",
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.labelMedium,
+                )
+            }
         }
     }
 }
